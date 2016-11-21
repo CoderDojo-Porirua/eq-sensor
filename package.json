@@ -1,0 +1,19 @@
+{
+  "name": "eq-sensor",
+  "version": "0.0.0",
+  "description": "Tessel project",
+  "main": "accelerometer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git://github.com/CoderDojo-Porirua/eq-sensor.git",
+  "keywords": [
+    "Tessel"
+  ],
+  "license": "MIT",
+  "readme": "A bare bones Tessel 2 blinky script.",
+  "dependencies": {
+    "accel-mma84": "^0.2.4",
+    "request": "^2.79.0"
+  }
+}
