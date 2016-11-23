@@ -15,6 +15,10 @@ var LED_LAN_WARN = 1
 var LED_GREEN = 2
 var LED_BLUE = 3
 
+// Magnitude range outside of which we'll send immediate data
+var threshold_min = 0.99; //0.95
+var threshold_max = 1.01; //1.05
+
 function oneInEvery(number, every) {
   return !(number % every);
 }
@@ -24,17 +28,43 @@ var counter = 0;
 // Initialize the accelerometer.
 accel.on('ready', function () {
 	// Stream accelerometer data
+
+  min_data = {
+    x:0,
+    y:0,
+    z:0
+  }
+
+  max_data = {
+    x:0,
+    y:0,
+    z:0
+  }
+
 	accel.on('data', function (xyz) {
 
 		var data = {
 			x: xyz[0].toFixed(2),
 			y: xyz[1].toFixed(2),
 			z: xyz[2].toFixed(2),
-			id: 'tessel'
+      magnitude: Math.sqrt(xyz[0] * xyz[0] + xyz[1] * xyz[1] + xyz[2] * xyz[2]),
+      id: 'tessel',
+      min_data: min_data,
+      max_data: max_data
     };
 
+    //console.log(magnitude);
+
+    data.min_data.x = Math.min(data.x, data.min_data.x);
+    data.min_data.y = Math.min(data.y, data.min_data.y);
+    data.min_data.z = Math.min(data.z, data.min_data.z);
+    data.max_data.x = Math.max(data.x, data.max_data.x);
+    data.max_data.y = Math.max(data.y, data.max_data.y);
+    data.max_data.z = Math.max(data.z, data.max_data.z);
+
+
 		counter++;
-		if(oneInEvery(counter, 100))
+		if(oneInEvery(counter, 100) || data.magnitude > threshold_max || data.magnitude < threshold_min)
 		{
 			console.log('Sending http request');
       console.log(JSON.stringify(data));
@@ -50,6 +80,19 @@ accel.on('ready', function () {
         if (!error && response.statusCode == 200) {
           blink(LED_GREEN, 500)
           console.log('OK');
+
+          data.min_data = {
+            x:0,
+            y:0,
+            z:0
+          }
+
+          data.max_data = {
+            x:0,
+            y:0,
+            z:0
+          }
+
         } else {
           blink(LED_ERROR, 5000)
         }
