@@ -16,8 +16,8 @@ var LED_GREEN = 2
 var LED_BLUE = 3
 
 // Magnitude range outside of which we'll send immediate data
-var threshold_min = 0.99; //0.95
-var threshold_max = 1.01; //1.05
+var threshold_min = 0.98; //0.95
+var threshold_max = 1.02; //1.05
 
 function oneInEvery(number, every) {
   return !(number % every);
@@ -55,16 +55,16 @@ accel.on('ready', function () {
 
     //console.log(magnitude);
 
-    data.min_data.x = Math.min(data.x, data.min_data.x);
-    data.min_data.y = Math.min(data.y, data.min_data.y);
-    data.min_data.z = Math.min(data.z, data.min_data.z);
-    data.max_data.x = Math.max(data.x, data.max_data.x);
-    data.max_data.y = Math.max(data.y, data.max_data.y);
-    data.max_data.z = Math.max(data.z, data.max_data.z);
+    min_data.x = Math.min(data.x, min_data.x);
+    min_data.y = Math.min(data.y, min_data.y);
+    min_data.z = Math.min(data.z, min_data.z);
+    max_data.x = Math.max(data.x, max_data.x);
+    max_data.y = Math.max(data.y, max_data.y);
+    max_data.z = Math.max(data.z, max_data.z);
 
 
 		counter++;
-		if(oneInEvery(counter, 100) || data.magnitude > threshold_max || data.magnitude < threshold_min)
+		if(oneInEvery(counter, 1000) || data.magnitude > threshold_max || data.magnitude < threshold_min)
 		{
 			console.log('Sending http request');
       console.log(JSON.stringify(data));
@@ -81,16 +81,16 @@ accel.on('ready', function () {
           blink(LED_GREEN, 500)
           console.log('OK');
 
-          data.min_data = {
-            x:0,
-            y:0,
-            z:0
+          min_data = {
+            x:xyz[0],
+            y:xyz[1],
+            z:xyz[2]
           }
 
-          data.max_data = {
-            x:0,
-            y:0,
-            z:0
+          max_data = {
+            x:xyz[0],
+            y:xyz[1],
+            z:xyz[2]
           }
 
         } else {
@@ -98,7 +98,7 @@ accel.on('ready', function () {
         }
       });
 
-			console.log('x:', xyz[0].toFixed(2),'y:', xyz[1].toFixed(2),'z:', xyz[2].toFixed(2));
+//			console.log('x:', xyz[0].toFixed(2),'y:', xyz[1].toFixed(2),'z:', xyz[2].toFixed(2));
 		}
 
 	});
