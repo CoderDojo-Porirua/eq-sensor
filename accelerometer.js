@@ -16,8 +16,8 @@ var LED_GREEN = 2
 var LED_BLUE = 3
 
 // Magnitude range outside of which we'll send immediate data
-var threshold_min = 0.98; //0.95
-var threshold_max = 1.02; //1.05
+var threshold_min = 0.99; //0.95
+var threshold_max = 1.01; //1.05
 
 function oneInEvery(number, every) {
   return !(number % every);
@@ -66,7 +66,7 @@ accel.on('ready', function () {
 		counter++;
 		if(oneInEvery(counter, 1000) || data.magnitude > threshold_max || data.magnitude < threshold_min)
 		{
-			console.log('Sending http request');
+//			console.log('Sending http request');
       console.log(JSON.stringify(data));
 
       var options = {
