@@ -9,14 +9,11 @@ of x, y, and z data from the accelerometer
 var tessel = require('tessel');
 var accel = require('accel-mma84').use(tessel.port['A']);
 var request = require('request');
-/*
-var options = {
-    host: 'requestb.in',
-    port: 80,
-    path: '/1albc7s1',
-    method: 'POST',
-};
-*/
+
+var LED_ERROR = 0
+var LED_LAN_WARN = 1
+var LED_GREEN = 2
+var LED_BLUE = 3
 
 function oneInEvery(number, every) {
   return !(number % every);
@@ -48,9 +45,13 @@ accel.on('ready', function () {
         json: data
       };
 
+      blink(LED_BLUE, 200)
       request(options, function (error, response, body) {
         if (!error && response.statusCode == 200) {
+          blink(LED_GREEN, 500)
           console.log('OK');
+        } else {
+          blink(LED_ERROR, 5000)
         }
       });
 
@@ -63,3 +64,12 @@ accel.on('ready', function () {
 	   console.log('Error:', err);
 	});
 });
+
+function blink(led, duration){
+  tessel.led[led].on();
+  setTimeout(function(){
+    tessel.led[led].off()
+  }, duration
+  );
+
+}
