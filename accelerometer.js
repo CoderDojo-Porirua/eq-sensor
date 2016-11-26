@@ -64,7 +64,7 @@ accel.on('ready', function () {
 
 
 		counter++;
-		if(oneInEvery(counter, 1000) || data.magnitude > threshold_max || data.magnitude < threshold_min)
+		if(oneInEvery(counter, 100) || data.magnitude > threshold_max || data.magnitude < threshold_min)
 		{
 //			console.log('Sending http request');
       console.log(JSON.stringify(data));
