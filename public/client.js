@@ -9,9 +9,17 @@
 // Get the data
 ///////////////////////////////////////////////////////////////////////////////
 
+var socket = io();
+
+console.log(socket);
+
+var data = [];
+
+
 $(function() {
   console.log('hello world :o');
   
+  /*
   $.get('/data', function(data) {
     data.forEach(function(data_item) {
       
@@ -21,7 +29,7 @@ $(function() {
       $('<li></li>').text(display).appendTo('ul#data');
     });
   });
-
+  */
     
   
   ///////////////////////////////////////////////////////////////////////////////
@@ -61,7 +69,7 @@ $(function() {
   Plotly.d3.json(rawDataURL, function(err, rawData) {
       if(err) throw err;
   
-      var data = prepData(rawData);
+      data = prepData(rawData);
       var layout = {
           title: 'Magnitudes',
           xaxis: {
@@ -70,7 +78,9 @@ $(function() {
           },
           yaxis: {
               //fixedrange: false,
-              range: [-0.2,0.2]
+              //range: [-0.2,0.2]
+              //range: [-0.05,0.05]
+              //range: [-1,1]
           }
       };
   
@@ -109,6 +119,10 @@ $(function() {
     var data_item_y = $('#y').val();
     var data_item_z = $('#z').val();
     var data_item_magnitude = $('#magnitude').val();
+    
+    socket.emit('data', {x: data_item_x, y: data_item_y, z: data_item_z, magnitude: data_item_magnitude});
+
+    /*
     $.post('/data?', {x: data_item_x, y: data_item_y, z: data_item_z, magnitude: data_item_magnitude}, function() {
 
       var display = new moment().format('hh:mm:ss') + ', x: ' + data_item_x + ', y: ' + data_item_y + ', z: ' + data_item_z + ', magnitude: ' + data_item_magnitude
@@ -122,6 +136,15 @@ $(function() {
       $('#magnitude').val('');
       $('input').focus();
     });
+    */
   });
   
+  socket.on('data', function(dataObj) {
+    console.log(dataObj);
+
+    data[0].x.push(new Date(dataObj[xField]));
+    data[0].y.push(dataObj[yField] - 1);
+    
+    Plotly.redraw('magnitudeGraph');
+  });
 });
