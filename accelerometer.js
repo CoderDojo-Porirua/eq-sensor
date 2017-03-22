@@ -46,9 +46,9 @@ accel.on('ready', function () {
     var previousData = data;
 
 		var data = {
-			x: xyz[0].toFixed(5),
-			y: xyz[1].toFixed(5),
-			z: xyz[2].toFixed(5),
+			x: xyz[0],//.toFixed(5),
+			y: xyz[1],//.toFixed(5),
+			z: xyz[2],//.toFixed(5),
       magnitude: Math.sqrt(xyz[0] * xyz[0] + xyz[1] * xyz[1] + xyz[2] * xyz[2]),
       id: 'tessel',
       min_data: min_data,
@@ -66,13 +66,13 @@ accel.on('ready', function () {
 
 
 		counter++;
-		if(oneInEvery(counter, 1000) || data.magnitude > threshold_max || data.magnitude < threshold_min)
+		if(oneInEvery(counter, 100) || data.magnitude > threshold_max || data.magnitude < threshold_min)
 		{
 //			console.log('Sending http request');
       console.log(JSON.stringify(data));
 
       var options = {
-        uri: 'https://fluff-protocol.hyperdev.space/data',
+        uri: 'https://fluff-protocol.glitch.me/data',
         method: 'POST',
         json: data
       };
